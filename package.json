@@ -5,7 +5,8 @@
   "scripts": {
     "server": "node --env-file=.env server/index.mjs",
     "worker": "node --env-file=.env worker/index.mjs",
-    "e2e": "node --env-file=.env scripts/e2e-job.mjs"
+    "e2e": "node --env-file=.env scripts/e2e-job.mjs",
+    "dev:fund": "node --env-file=.env scripts/dev-fund.mjs"
   },
   "dependencies": {
     "@arkiv-network/sdk": "1.0.1",
