@@ -6,7 +6,7 @@ import { api } from "../lib/api.js"
 import { fetchResult } from "../lib/arkiv.js"
 import { saveJob } from "../lib/jobs.js"
 import { signPurchase, txUrl } from "../lib/whitechain.js"
-import { Critter, CRITTERS } from "./Critter.jsx"
+import { Face, Pug } from "./Dog.jsx"
 
 const LANGUAGES = ["Malayalam", "Hindi", "Marathi", "Tamil", "Bengali", "English", "Japanese"]
 const MAX_RECORD_MS = 20_000
@@ -62,7 +62,6 @@ export function JobSheet({ service, offer, account, config, replyKeys, verified,
   const [to, setTo] = useState("Malayalam")
   const [step, setStep] = useState({ kind: "compose" })
   const recorder = useRecorder()
-  const critter = CRITTERS[service]
   const price = priceUnitsAt(offer, Date.now() / 1000)
   // Only while composing: once paying, the refreshed balance already has this job taken out.
   const short = step.kind === "compose" && balance !== null && balance * 1e6 < Number(price)
@@ -125,7 +124,7 @@ export function JobSheet({ service, offer, account, config, replyKeys, verified,
   return (
     <dialog ref={dialog} className="sheet" onClose={onClose} aria-labelledby="job-title">
       <div className="sheet-head">
-        {step.kind === "compose" || step.kind === "paying" ? <Critter kind={critter.kind} height={64} /> : <span />}
+        <Face face={step.kind === "done" ? "done" : service} size={56} />
         <div className="stack" style={{ gap: 4 }}>
           <h2 id="job-title">{offer.title}</h2>
           <p className="muted">
@@ -182,20 +181,17 @@ export function JobSheet({ service, offer, account, config, replyKeys, verified,
       ) : step.kind === "working" ? (
         <div className="stack center" role="status">
           <div className="stage">
-            <Critter kind={critter.kind} height={140} />
+            <Pug size={120} />
           </div>
           <p className="paid">Paid ✓</p>
-          <p className="working">{critter.name} is on it…</p>
+          <p className="working">A provider is on it…</p>
           <a className="link" href={txUrl(step.whitechainTx)} target="_blank" rel="noreferrer">
             See the payment on Whitechain
           </a>
         </div>
       ) : (
         <div className="stack">
-          <div className="stage">
-            <Critter kind={critter.kind} anim="superwin" height={140} />
-          </div>
-          <p className="answer">{step.answer}</p>
+          <p className="answer pop-in">{step.answer}</p>
           <button type="button" className="btn" onClick={() => navigator.clipboard?.writeText(step.answer)}>
             Copy
           </button>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { nextResetUtc, priceAt } from "../../shared/pricing.mjs"
-import { Critter, CRITTERS } from "./components/Critter.jsx"
+import { Face, Pug } from "./components/Dog.jsx"
 import { JobSheet } from "./components/JobSheet.jsx"
 import { JoinCard } from "./components/JoinCard.jsx"
 import { api } from "./lib/api.js"
@@ -12,9 +12,9 @@ import { txUrl, usdtBalance } from "./lib/whitechain.js"
 const POLL_MS = 5000
 const account = loadBurner()
 const SERVICES = [
-  { id: "translate", name: "Translate", blurb: "Fox turns any text into Malayalam, Hindi, Tamil and more" },
-  { id: "summarize", name: "Summarize", blurb: "Koala reads the long thing and gives you 5 bullets" },
-  { id: "transcribe", name: "Transcribe", blurb: "Rabbit listens to your voice note and writes it down" },
+  { id: "translate", name: "Translate", blurb: "Any text into Malayalam, Hindi, Tamil and more" },
+  { id: "summarize", name: "Summarize", blurb: "A long article or contract in 5 bullets" },
+  { id: "transcribe", name: "Transcribe", blurb: "Your voice note, written down" },
 ]
 
 function useNow(ms) {
@@ -110,26 +110,26 @@ export function App() {
     <main className="shell">
       <header className="top">
         <h1 className="brand">
-          Last <span>Call</span>
+          <Pug size={40} />
+          Last Call
         </h1>
         <p className="wallet" aria-label="Your balance">
           {balance === null ? "…" : `${balance.toFixed(2)} USDT`}
         </p>
       </header>
 
-      <section className="hero" aria-labelledby="clock-label">
-        <p id="clock-label" className="hero-kicker">
-          Spare AI time vanishes at midnight UTC in
+      <section className="hero" aria-labelledby="hero-title">
+        <p className="pill-note">
+          <Face face="summarize" size={28} />
+          0G enclaves · Arkiv · gasless USDT
         </p>
-        <p className="clock" aria-live="off">
+        <h1 id="hero-title">
+          AI jobs at <span className="hl">last call</span>
+        </h1>
+        <p className="clock" aria-label={`Spare AI time resets in ${untilReset(now)}`}>
           {untilReset(now)}
         </p>
-        <p className="hero-sub">Until then, the crew works it off cheap. Prices drop every second.</p>
-        <div className="hero-crew">
-          <Critter kind="rabbit" height={78} />
-          <Critter kind="koala" height={72} />
-          <Critter kind="fox" height={76} />
-        </div>
+        <p className="hero-sub">Spare AI time is wiped at midnight UTC. Until then it's yours, cheaper every second.</p>
       </section>
 
       {!verified && config && (
@@ -177,8 +177,8 @@ export function App() {
               return (
                 <li key={s.id}>
                   <button type="button" className="service" disabled={!offer || !replyKeys} onClick={() => setOpen({ service: s.id, offer: offer.cheapest })}>
-                    <span className="service-critter">
-                      <Critter kind={CRITTERS[s.id].kind} height={88} />
+                    <span className="service-face">
+                      <Face face={s.id} size={56} />
                     </span>
                     <span className="service-body">
                       <span className="service-name">{s.name}</span>
@@ -206,9 +206,7 @@ export function App() {
         )
       ) : jobs.length === 0 ? (
         <div className="card stack center">
-          <p className="empty-emoji" aria-hidden="true">
-            🌙
-          </p>
+          <Face face="sleepy" size={72} />
           <p>No jobs yet. Your results stay on this phone, readable only here.</p>
           <button type="button" className="btn primary" onClick={() => setTab("services")}>
             Try a job
@@ -219,7 +217,7 @@ export function App() {
           {jobs.map((job) => (
             <li key={job.jobKey} className="card job">
               <p className="job-head">
-                <Critter kind={CRITTERS[job.service].kind} height={36} />
+                <Face face={job.answer ? "done" : job.service} size={32} />
                 <span>
                   <strong>{SERVICES.find((s) => s.id === job.service)?.name}</strong> · {job.price} USDT · {new Date(job.at).toLocaleTimeString()}
                 </span>
