@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { nextResetUtc, priceAt } from "../../shared/pricing.mjs"
+import { Critter, CRITTERS } from "./components/Critter.jsx"
 import { JobSheet } from "./components/JobSheet.jsx"
 import { JoinCard } from "./components/JoinCard.jsx"
 import { api } from "./lib/api.js"
@@ -11,9 +12,9 @@ import { txUrl, usdtBalance } from "./lib/whitechain.js"
 const POLL_MS = 5000
 const account = loadBurner()
 const SERVICES = [
-  { id: "translate", icon: "🗣️", name: "Translate", blurb: "Any text into Malayalam, Hindi, Tamil and more" },
-  { id: "summarize", icon: "📄", name: "Summarize", blurb: "A long article or contract in 5 bullets" },
-  { id: "transcribe", icon: "🎙️", name: "Transcribe", blurb: "A voice note into text, any language" },
+  { id: "translate", name: "Translate", blurb: "Fox turns any text into Malayalam, Hindi, Tamil and more" },
+  { id: "summarize", name: "Summarize", blurb: "Koala reads the long thing and gives you 5 bullets" },
+  { id: "transcribe", name: "Transcribe", blurb: "Rabbit listens to your voice note and writes it down" },
 ]
 
 function useNow(ms) {
@@ -116,9 +117,20 @@ export function App() {
         </p>
       </header>
 
-      <p className="ticker" aria-live="off">
-        AI allowances reset in <strong>{untilReset(now)}</strong>. Prices fall until then.
-      </p>
+      <section className="hero" aria-labelledby="clock-label">
+        <p id="clock-label" className="hero-kicker">
+          Spare AI time vanishes at midnight UTC in
+        </p>
+        <p className="clock" aria-live="off">
+          {untilReset(now)}
+        </p>
+        <p className="hero-sub">Until then, the crew works it off cheap. Prices drop every second.</p>
+        <div className="hero-crew">
+          <Critter kind="rabbit" height={78} />
+          <Critter kind="koala" height={72} />
+          <Critter kind="fox" height={76} />
+        </div>
+      </section>
 
       {!verified && config && (
         <JoinCard
@@ -165,8 +177,8 @@ export function App() {
               return (
                 <li key={s.id}>
                   <button type="button" className="service" disabled={!offer || !replyKeys} onClick={() => setOpen({ service: s.id, offer: offer.cheapest })}>
-                    <span className="service-icon" aria-hidden="true">
-                      {s.icon}
+                    <span className="service-critter">
+                      <Critter kind={CRITTERS[s.id].kind} height={88} />
                     </span>
                     <span className="service-body">
                       <span className="service-name">{s.name}</span>
@@ -207,7 +219,10 @@ export function App() {
           {jobs.map((job) => (
             <li key={job.jobKey} className="card job">
               <p className="job-head">
-                <strong>{SERVICES.find((s) => s.id === job.service)?.name}</strong> · {job.price} USDT · {new Date(job.at).toLocaleTimeString()}
+                <Critter kind={CRITTERS[job.service].kind} height={36} />
+                <span>
+                  <strong>{SERVICES.find((s) => s.id === job.service)?.name}</strong> · {job.price} USDT · {new Date(job.at).toLocaleTimeString()}
+                </span>
               </p>
               <p className="muted">{job.preview}</p>
               {job.answer ? <p className="answer">{job.answer}</p> : <p className="working">Waiting for the provider…</p>}
