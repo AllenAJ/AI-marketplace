@@ -51,6 +51,10 @@ const { entities } = await client.select().from(Listing).where(eq("market", "eth
 // every live offer, with the columns to compute its current price (shared/pricing.mjs)
 ```
 
+### Arkiv judging docs
+
+[Schema](arkiv/schema.md) · [How we use Arkiv](arkiv/how-you-use-arkiv.md) · [Why Arkiv](arkiv/why-arkiv.md) · [Reach](arkiv/reach.md) · [Friction log](arkiv/friction.md)
+
 ## Why each sponsor is load-bearing
 
 - **Arkiv:** a listing lives exactly as long as the allowance it sells work from: it expires at 00:00 UTC, so tomorrow's market starts empty with no cleanup job. Jobs and results are entities only their two parties can open, and any app or agent can query the cheapest live offer without asking us.
